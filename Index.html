@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCS INFRAGOLD Locator</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            padding-top: 20px;
+        }
+
+        h1 {
+            font-size: 2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #ffeb3b;
+            margin-bottom: 10px;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+            font-size: 1em;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #ffeb3b;
+            color: black;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ffc107;
+        }
+
+        .locator-container {
+    position: relative;
+    width: 80%;
+    max-width: 800px;
+    aspect-ratio: 16 / 9; /* Adjust based on your actual image */
+    margin: 0 auto;
+}
+
+.locator-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+        .dot {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 60%;
+            border: 5px solid transparent;
+            box-sizing: border-box;
+        }
+
+        .dot.highlight {
+            border-color: black;
+        }
+
+        /* Position each dot manually based on the image */
+       /* Updated dot positions relative to the image */
+/* Adjusted positions based on your screenshot */
+#dot-D { top: 29%; left: 4%; }
+#dot-E { top: 5%; left: 15%; }
+#dot-H { top: 5%; left: 20%; }
+#dot-N { top: 5%; left: 25%; }
+
+#dot-A { top: 85%; left: 5%; }
+#dot-K { top: 85%; left: 25%; }
+
+#dot-Q { top: 5%; left: 70%; }
+#dot-T { top: 5%; left: 85%; }
+
+#dot-Z { top: 85%; left: 95%; }
+
+
+        /* Add positions for all other dots here */
+    </style>
+</head>
+<body>
+    <h1>PCS INFRAGOLD Locator</h1>
+    <div class="search-bar">
+        <input type="text" id="categoryCode" placeholder="Enter Category Code">
+        <button onclick="searchCategory()">Search</button>
+    </div>
+
+    <div class="locator-container">
+        <img src="pcsinventory.jpg" alt="PCS Stock Inventory" class="locator-image">
+        <!-- Add dots as overlays -->
+        <div class="dot" id="dot-D"></div>
+        <div class="dot" id="dot-E"></div>
+        <div class="dot" id="dot-H"></div>
+        <div class="dot" id="dot-N"></div>
+        <!-- Add dots for all other areas (A, B, C, etc.) -->
+    </div>
+
+    <script>
+        // Inventory data with corresponding areas
+        const inventory = [
+            { categoryCode: 'A123', area: 'D' },
+            { categoryCode: 'B456', area: 'E' },
+            { categoryCode: 'C789', area: 'H' }
+            // Add more items here
+        ];
+
+        // Function to reset highlighting
+        function resetHighlights() {
+            document.querySelectorAll('.dot').forEach(dot => {
+                dot.classList.remove('highlight');
+            });
+        }
+
+        // Search function
+        function searchCategory() {
+            const categoryCode = document.getElementById('categoryCode').value.trim();
+            resetHighlights(); // Reset any previous highlights
+
+            if (categoryCode) {
+                const item = inventory.find(i => i.categoryCode.toLowerCase() === categoryCode.toLowerCase());
+                if (item) {
+                    // Highlight the corresponding dot
+                    const dotId = `dot-${item.area}`;
+                    const dotElement = document.getElementById(dotId);
+                    if (dotElement) {
+                        dotElement.classList.add('highlight');
+                        alert(`Item found in area ${item.area}`);
+                    }
+                } else {
+                    alert('Item not found!');
+                }
+            } else {
+                alert('Please enter a category code!');
+            }
+        }
+    </script>
+</body>
+</html>
