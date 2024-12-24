@@ -3,159 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PCS INFRAGOLD Locator</title>
+    <title>PCS Product Locator</title>
     <style>
         body {
-            margin: 0;
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            padding-top: 20px;
-        }
-
-        h1 {
-            font-size: 2em;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #ffeb3b;
-            margin-bottom: 10px;
-        }
-
-        .search-bar {
-            margin-bottom: 20px;
             text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
         }
-
+        h1 {
+            color: #333;
+        }
+        .search-bar {
+            margin: 20px 0;
+        }
         input[type="text"] {
-            width: 300px;
             padding: 10px;
-            border: none;
-            border-radius: 5px 0 0 5px;
-            outline: none;
-            font-size: 1em;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
         }
-
         button {
             padding: 10px 20px;
-            background-color: #ffeb3b;
-            color: black;
+            background-color: #28a745;
+            color: white;
             border: none;
-            border-radius: 0 5px 5px 0;
+            border-radius: 5px;
+            font-size: 16px;
             cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: background-color 0.3s;
         }
-
         button:hover {
-            background-color: #ffc107;
+            background-color: #218838;
         }
-
-        .locator-container {
-    position: relative;
-    width: 80%;
-    max-width: 800px;
-    aspect-ratio: 16 / 9; /* Adjust based on your actual image */
-    margin: 0 auto;
-}
-
-.locator-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-        .dot {
+        .image-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .highlight {
             position: absolute;
-            width: 30px;
-            height: 30px;
-            border-radius: 60%;
-            border: 5px solid transparent;
-            box-sizing: border-box;
+            border: 2px solid red;
+            border-radius: 50%;
+            pointer-events: none;
         }
-
-        .dot.highlight {
-            border-color: black;
+        .product-details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: none;
+            text-align: left;
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
         }
-
-        /* Position each dot manually based on the image */
-       /* Updated dot positions relative to the image */
-/* Adjusted positions based on your screenshot */
-#dot-D { top: 29%; left: 4%; }
-#dot-E { top: 5%; left: 15%; }
-#dot-H { top: 5%; left: 20%; }
-#dot-N { top: 5%; left: 25%; }
-
-#dot-A { top: 85%; left: 5%; }
-#dot-K { top: 85%; left: 25%; }
-
-#dot-Q { top: 5%; left: 70%; }
-#dot-T { top: 5%; left: 85%; }
-
-#dot-Z { top: 85%; left: 95%; }
-
-
-        /* Add positions for all other dots here */
+        .product-details img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>PCS INFRAGOLD Locator</h1>
+    <h1>PCS Product Locator</h1>
     <div class="search-bar">
         <input type="text" id="categoryCode" placeholder="Enter Category Code">
         <button onclick="searchCategory()">Search</button>
     </div>
-
-    <div class="locator-container">
-        <img src="pcs photo.png" alt="PCS Stock Inventory" class="locator-image">
-        <!-- Add dots as overlays -->
-        <div class="dot" id="dot-D"></div>
-        <div class="dot" id="dot-E"></div>
-        <div class="dot" id="dot-H"></div>
-        <div class="dot" id="dot-N"></div>
-        <!-- Add dots for all other areas (A, B, C, etc.) -->
+    <div class="image-container">
+        <img src="pcs_inventory.jpg" alt="PCS Inventory Map" id="inventoryMap">
+        <div id="highlight" class="highlight" style="display: none;"></div>
     </div>
+    <div id="productDetails" class="product-details"></div>
 
     <script>
-        // Inventory data with corresponding areas
-        const inventory = [
-            { categoryCode: 'A123', area: 'D' },
-            { categoryCode: 'B456', area: 'E' },
-            { categoryCode: 'C789', area: 'H' }
-            // Add more items here
-        ];
+        // Example inventory data with product details
+        const inventory = {
+            A123: { 
+                name: "Storage Tank", 
+                price: 2500, 
+                image: "storage_tank.jpg", 
+                x: 50, 
+                y: 100 
+            },
+            B456: { 
+                name: "Water Pump", 
+                price: 4500, 
+                image: "water_pump.jpg", 
+                x: 150, 
+                y: 200 
+            },
+            C789: { 
+                name: "Pipe Fittings", 
+                price: 750, 
+                image: "pipe_fittings.jpg", 
+                x: 300, 
+                y: 400 
+            }
+        };
 
-        // Function to reset highlighting
-        function resetHighlights() {
-            document.querySelectorAll('.dot').forEach(dot => {
-                dot.classList.remove('highlight');
-            });
-        }
-
-        // Search function
         function searchCategory() {
-            const categoryCode = document.getElementById('categoryCode').value.trim();
-            resetHighlights(); // Reset any previous highlights
+            const categoryCode = document.getElementById("categoryCode").value.trim();
+            const highlight = document.getElementById("highlight");
+            const productDetails = document.getElementById("productDetails");
 
-            if (categoryCode) {
-                const item = inventory.find(i => i.categoryCode.toLowerCase() === categoryCode.toLowerCase());
-                if (item) {
-                    // Highlight the corresponding dot
-                    const dotId = `dot-${item.area}`;
-                    const dotElement = document.getElementById(dotId);
-                    if (dotElement) {
-                        dotElement.classList.add('highlight');
-                        alert(`Item found in area ${item.area}`);
-                    }
-                } else {
-                    alert('Item not found!');
-                }
+            // Reset highlights and product details
+            highlight.style.display = "none";
+            productDetails.style.display = "none";
+
+            if (inventory[categoryCode]) {
+                const { name, price, image, x, y } = inventory[categoryCode];
+
+                // Position the highlight
+                highlight.style.display = "block";
+                highlight.style.left = `${x}px`;
+                highlight.style.top = `${y}px`;
+                highlight.style.width = "30px";
+                highlight.style.height = "30px";
+
+                // Display product details
+                productDetails.style.display = "block";
+                productDetails.innerHTML = `
+                    <img src="${image}" alt="${name}">
+                    <h3>${name}</h3>
+                    <p>Price: ₹${price}</p>
+                `;
             } else {
-                alert('Please enter a category code!');
+                alert("Category not found!");
             }
         }
     </script>
